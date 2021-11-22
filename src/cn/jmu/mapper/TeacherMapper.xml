@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jmu.mapper.TeacherMapper">
+	<resultMap type="cn.jmu.po.Score" id="myResultMap">
+	<id property="sno" column="sno" />
+	<id property="cou_classno" column="cou_classno" />
+	<id property="cname" column="cname" />
+	<id property="credit" column="credit" />
+	<id property="type" column="type" />
+	<id property="state" column="state" />
+	<id property="grade" column="grade" />
+	</resultMap>
+	<resultMap type="cn.jmu.po.Course" id="myResultMap1">
+	<id property="cno" column="cno" />
+	<id property="cname" column="cname" />
+	<id property="credit" column="credit" />
+	<id property="type" column="type" />
+	<id property="cou_classno" column="cou_classno" />
+	<id property="term" column="term" />
+	<id property="state" column="state" />
+	<id property="tno" column="tno" />
+	</resultMap>
+	<resultMap type="cn.jmu.po.Grade_set" id="myResultMap2">
+	<id property="cou_classno" column="cou_classno" />
+	<id property="usual_grade" column="usual_grade" />
+	<id property="final_grade" column="final_grade" />
+	</resultMap>
+	<select id="findNullGrade" resultMap="myResultMap" parameterType="String">
+		 select * from sc,cou_class where cou_class.cou_classno=sc.cou_classno and grade is null and tno=#{tno};
+	</select>
+	<!-- 查找所有信息 -->
+	<select id="findStuByTno" resultMap="myResultMap">
+		select * from sc,cou_class where sc.cou_classno=cou_class.cou_classno and tno=#{tno};
+	</select>
+	<select id="findByTno" resultType="cn.jmu.po.Teacher" parameterType="String">
+		select tno,userid,tname from teacher where tno=#{tno}
+	</select>
+	<select id="findCourseByTno" resultMap="myResultMap1">
+		select * from course  join  cou_class using  (cno) where tno=#{tno};
+	</select>
+	<select id="findSetByTno" resultMap="myResultMap2">
+		select cou_class.cou_classno,usual_grade,final_grade from cou_class,grade_set,teacher where teacher.tno=cou_class.tno and cou_class.cou_classno=grade_set.cou_classno and cou_class.tno=#{tno};
+	</select>
+	<insert id="insertGrade" parameterType="cn.jmu.po.Score"
+		>
+		insert into sc(sno,cou_classno,cname,credit,type,state,usual_score,final_score,grade)
+		values(#{sno},#{cou_classno},#{cname},#{credit},#{type},#{state},#{usual_score},#{final_score},#{grade})
+	</insert>
+	<select id="findStuBySno" resultMap="myResultMap" parameterType="String">
+		 select * from sc,cou_class where cou_class.cou_classno=sc.cou_classno and grade is null and sno=#{sno};
+	</select>
+	<select id="findScoreTeacher" resultMap="myResultMap" parameterType="String">
+		select * from sc where sno=#{sno};
+	</select>
+	<update id="update_GradeTeacher" parameterType="cn.jmu.po.Score">
+	update  sc set usual_score=#{usual_score},final_score=#{final_score},grade=#{grade} where sno=#{sno} and cou_classno=#{cou_classno}
+	</update>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jmu.mapper.ScoreMapper">
+	<resultMap type="cn.jmu.po.Score" id="myResultMap">
+	<id property="term" column="term" />
+	<id property="cno" column="cno" />
+	<id property="cname" column="cname" />
+	<id property="ctime" column="ctime" />
+	<id property="credit" column="credit" />
+	<id property="type" column="type" />
+	<id property="state" column="state" />
+	<id property="grade" column="grade" />
+	</resultMap>
+	<!-- 查找所有信息 -->
+	<select id="findScoreBySno" resultMap="myResultMap">
+		select term,course.cno,course.cname,ctime,course.credit,course.type,cou_class.state,grade from sc,cou_class,course where
+		 sno=#{sno} and sc.cou_classno=cou_class.cou_classno and cou_class.cno=course.cno;
+	</select>
+	<select id="findScoreByTerm" resultMap="myResultMap">
+		select term,course.cno,course.cname,ctime,course.credit,course.type,cou_class.state,grade from sc,cou_class,course where
+		 sno=#{arg0} and term=#{arg1} and sc.cou_classno=cou_class.cou_classno and cou_class.cno=course.cno;
+	</select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jmu.mapper.DeanMapper">
+	<select id="findByDean_no" resultType="cn.jmu.po.Dean" parameterType="String">
+		select dean_no,userid,dean_name from dean where dean_no=#{dean_no};
+	</select>
+	<resultMap type="cn.jmu.po.Score" id="myResultMap">
+	<id property="sno" column="sno" />
+	<id property="cou_classno" column="cou_classno" />
+	<id property="cname" column="cname" />
+	<id property="credit" column="credit" />
+	<id property="type" column="type" />
+	<id property="state" column="state" />
+	<id property="usual_grade" column="usual_grade" />
+	<id property="final_grade" column="final_grade" />
+	<id property="grade" column="grade" />
+	</resultMap>
+	<resultMap type="cn.jmu.po.Course" id="myResultMap1">
+	<id property="cno" column="cno" />
+	<id property="cname" column="cname" />
+	<id property="credit" column="credit" />
+	<id property="type" column="type" />
+	<id property="cou_classno" column="cou_classno" />
+	<id property="term" column="term" />
+	<id property="state" column="state" />
+	<id property="tno" column="tno" />
+	</resultMap>
+	<resultMap type="cn.jmu.po.Report" id="myResultMap2">
+	<id property="cou_classname" column="cou_classname" />
+	<id property="avg_grade" column="avg_grade" />
+	<id property="number" column="number" />
+	<id property="pass" column="pass" />
+	</resultMap>
+	<select id="findAllScore" resultMap="myResultMap">
+		select * from sc;
+	</select>
+	<select id="findLike" resultType="cn.jmu.po.Score" parameterType="String">
+		select * from sc where sno=#{sno}
+	</select>
+	<select id="findNull" resultMap="myResultMap1" >
+		 select  * from cou_class natural  join course  where  cou_class.cno=course.cno  and tno is null;
+	</select>
+	<select id="findNotNull" resultMap="myResultMap1" >
+		 select  * from cou_class natural  join course  where  cou_class.cno=course.cno  and tno is not null;
+	</select>
+	<select id="findBycou_classno" parameterType="String"
+		resultType="cn.jmu.po.Course">
+		select  * from cou_class natural  join course  where  cou_class.cno=course.cno  and tno is null and cou_classno=#{cou_classno};
+	</select>
+	<update id="update_Tno" parameterType="cn.jmu.po.Course">
+	update  cou_class set tno=#{tno} where cou_classno=#{cou_classno}
+	</update>
+	<select id="findScore" resultMap="myResultMap" parameterType="String">
+		select * from sc where sno=#{sno};
+	</select>
+	<update id="update_Grade" parameterType="cn.jmu.po.Score">
+	update  sc set usual_score=#{usual_score},final_score=#{final_score},grade=#{grade} where sno=#{sno} and cou_classno=#{cou_classno}
+	</update>
+	<select id="showReportTable" resultMap="myResultMap2" >
+		  select cou_classname,avg(grade) as avg_grade,number,sum(case when grade>=60 then 1 else 0 end) as pass from sc,cou_class,class_class where sc.cou_classno=cou_class.cou_classno=cou_class.cou_classno group by sc.cou_classno;
+	</select>
+</mapper>
